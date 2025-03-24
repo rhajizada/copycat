@@ -21,7 +21,7 @@ static LANGUAGES_JSON: &str = include_str!("../assets/languages.json");
 /// used by [`detect_language`] to figure out how to fence code blocks.
 static EXT_TO_TAG: Lazy<HashMap<String, String>> = Lazy::new(|| {
     let parsed: HashMap<String, LanguageData> =
-        serde_json::from_str(LANGUAGES_JSON).expect("Invalid languages.json");
+        serde_json::from_str(LANGUAGES_JSON).expect("invalid languages.json");
 
     let mut map = HashMap::new();
 
@@ -84,7 +84,7 @@ mod tests {
         assert_eq!(
             detect_language(path),
             "markdown",
-            "Files named `README.md` should return `markdown`"
+            "files named `README.md` should return `markdown`"
         );
     }
 
@@ -94,7 +94,7 @@ mod tests {
         assert_eq!(
             detect_language(path),
             "text",
-            "Unknown extension should fall back to `text`"
+            "unknown extension should fall back to `text`"
         );
     }
 }

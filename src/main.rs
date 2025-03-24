@@ -36,7 +36,7 @@ fn main() {
     }
 
     let files = files::collect_files(args.path.clone(), &args.excludes, args.sort)
-        .expect("Failed to collect files");
+        .expect("failed to collect files");
 
     if files.is_empty() {
         eprintln!("no matching files found, nothing to copy");
@@ -44,9 +44,9 @@ fn main() {
     }
 
     let markdown = formatter::generate_markdown(&args.path, &files)
-        .expect("Failed to format files as Markdown");
+        .expect("failed to format files as Markdown");
 
-    let mut ctx = ClipboardContext::new().expect("Failed to create clipboard context");
+    let mut ctx = ClipboardContext::new().expect("failed to create clipboard context");
     ctx.set_contents(markdown)
-        .expect("Failed to set clipboard contents");
+        .expect("failed to set clipboard contents");
 }
