@@ -43,17 +43,12 @@ static EXT_TO_TAG: Lazy<HashMap<String, String>> = Lazy::new(|| {
 ///
 /// If no known mapping is found, it returns `"text"` as a fallback.
 pub fn detect_language(path: &Path) -> &str {
-    if let Some(ext) = path.extension().and_then(|s| s.to_str()) {
-        if let Some(tag) = EXT_TO_TAG.get(ext) {
-            return tag;
-        }
+    match (
+        path.extension().and_then(|s| s.to_str()),
+        path.file_name().and_then(|s| s.to_str()),
+    ) {
+        (Some(ext), _) if EXT_TO_TAG.contains_key(ext) => EXT_TO_TAG.get(ext).unwrap(),
+        (_, Some(name)) if EXT_TO_TAG.contains_key(name) => EXT_TO_TAG.get(name).unwrap(),
+        _ => "text",
     }
-
-    if let Some(name) = path.file_name().and_then(|s| s.to_str()) {
-        if let Some(tag) = EXT_TO_TAG.get(name) {
-            return tag;
-        }
-    }
-
-    "text"
 }

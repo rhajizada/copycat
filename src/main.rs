@@ -28,7 +28,7 @@ fn main() {
     let args = Args::parse();
 
     if !args.path.exists() {
-        panic!("provided path \"{}\" does not exist", args.path.display());
+        panic!("provided path {} does not exist", args.path.display());
     }
 
     let files =

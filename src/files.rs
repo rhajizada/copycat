@@ -30,7 +30,7 @@ pub fn collect_files(path: PathBuf, excludes: &[String]) -> Result<Vec<PathBuf>>
 
     for result in walker {
         let entry = result?;
-        if entry.file_type().map(|ft| ft.is_file()).unwrap_or(false) {
+        if matches!(entry.file_type(), Some(ft) if ft.is_file()) {
             files.push(entry.path().to_path_buf());
         }
     }
