@@ -3,31 +3,33 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use std::path::Path;
 
+/// Data describing the file extensions and filenames for a given syntax tag.
+/// For instance: tag = "rust", extensions = [".rs"]
 #[derive(Debug, Deserialize)]
 pub struct LanguageData {
+    /// File extensions (e.g. ".rs", ".py") that map to a particular code block tag.
     pub extensions: Vec<String>,
+    /// Exact filenames (e.g. "Dockerfile", "Makefile") that map to a particular code block tag.
     pub filenames: Vec<String>,
 }
 
-// We'll embed our curated languages.json at compile time
+/// A compiled JSON file mapping code block tags to their corresponding
+/// [`LanguageData`] (extensions & filenames).
 static LANGUAGES_JSON: &str = include_str!("../assets/languages.json");
 
-// Use a HashMap<String, String> so we store owned data in a static
+/// A static map from extension/filename -> code block tag,
+/// used by [`detect_language`] to figure out how to fence code blocks.
 static EXT_TO_TAG: Lazy<HashMap<String, String>> = Lazy::new(|| {
-    // parse a map: { "tag_name": { "extensions": [], "filenames": [] }, ... }
     let parsed: HashMap<String, LanguageData> =
         serde_json::from_str(LANGUAGES_JSON).expect("Invalid languages.json");
 
     let mut map = HashMap::new();
 
-    // Each KEY in `parsed` is the `tag` (e.g., 'python', 'rust', etc.)
     for (tag, data) in parsed {
-        // Insert each extension => tag
         for ext in data.extensions {
             let ext_str = ext.trim_start_matches('.').to_string();
             map.insert(ext_str, tag.clone());
         }
-        // Insert each filename => tag
         for name in data.filenames {
             map.insert(name, tag.clone());
         }
@@ -36,7 +38,10 @@ static EXT_TO_TAG: Lazy<HashMap<String, String>> = Lazy::new(|| {
     map
 });
 
-/// Detect the code block tag (e.g. "rust", "python", "markdown")
+/// Detects the code block tag for the given `path` based on its file extension
+/// or full filename, using the mapping from [`LANGUAGES_JSON`].
+///
+/// If no known mapping is found, it returns `"text"` as a fallback.
 pub fn detect_language(path: &Path) -> &str {
     if let Some(ext) = path.extension().and_then(|s| s.to_str()) {
         if let Some(tag) = EXT_TO_TAG.get(ext) {
@@ -50,6 +55,5 @@ pub fn detect_language(path: &Path) -> &str {
         }
     }
 
-    // Fallback
     "text"
 }

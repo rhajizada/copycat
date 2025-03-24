@@ -1,8 +1,13 @@
 use anyhow::Result;
+use ignore::overrides::{Override, OverrideBuilder};
 use ignore::WalkBuilder;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-pub fn collect_files(path: PathBuf) -> Result<Vec<PathBuf>> {
+/// Collect files from `path`, honoring .gitignore and
+/// additional user-defined exclude patterns via `excludes`.
+///
+/// We'll prefix each exclude pattern with `!`, which means “exclude” in override logic.
+pub fn collect_files(path: PathBuf, excludes: &[String]) -> Result<Vec<PathBuf>> {
     let mut files = Vec::new();
 
     if path.is_file() {
@@ -10,7 +15,18 @@ pub fn collect_files(path: PathBuf) -> Result<Vec<PathBuf>> {
         return Ok(files);
     }
 
-    let walker = WalkBuilder::new(&path).standard_filters(true).build();
+    // Build override rules with forced exclusion
+    let overrides = build_override(excludes, &path)?;
+
+    let walker = WalkBuilder::new(&path)
+        .standard_filters(true)
+        .follow_links(false)
+        .ignore(true)
+        .git_ignore(true)
+        .git_exclude(true)
+        .git_global(true)
+        .overrides(overrides)
+        .build();
 
     for result in walker {
         let entry = result?;
@@ -20,4 +36,14 @@ pub fn collect_files(path: PathBuf) -> Result<Vec<PathBuf>> {
     }
 
     Ok(files)
+}
+
+/// Builds an `Override` set from the given CLI exclude patterns.
+/// By prefixing each pattern with `!`, we tell the override to exclude it.
+fn build_override(excludes: &[String], root: &Path) -> Result<Override> {
+    let mut builder = OverrideBuilder::new(root);
+    for pattern in excludes {
+        builder.add(&format!("!{}", pattern))?;
+    }
+    Ok(builder.build()?)
 }
