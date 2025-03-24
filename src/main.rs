@@ -18,7 +18,7 @@ struct Args {
     /// If directory, copycat recursively collects files.
     path: PathBuf,
 
-    /// One or more glob patterns for excluding files (e.g. "*.DS_Store", "**/*.md").
+    /// One or more glob patterns for excluding files (e.g. ".gitignore", "**/*.md").
     /// Can be repeated multiple times.
     #[arg(long = "exclude", short = 'e', action = ArgAction::Append)]
     excludes: Vec<String>,
