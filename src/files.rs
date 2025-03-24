@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 /// additional user-defined exclude patterns via `excludes`.
 ///
 /// We'll prefix each exclude pattern with `!`, which means “exclude” in override logic.
-pub fn collect_files(path: PathBuf, excludes: &[String]) -> Result<Vec<PathBuf>> {
+pub fn collect_files(path: PathBuf, excludes: &[String], sort: bool) -> Result<Vec<PathBuf>> {
     let mut files = Vec::new();
 
     if path.is_file() {
@@ -33,6 +33,10 @@ pub fn collect_files(path: PathBuf, excludes: &[String]) -> Result<Vec<PathBuf>>
         if matches!(entry.file_type(), Some(ft) if ft.is_file()) {
             files.push(entry.path().to_path_buf());
         }
+    }
+
+    if sort {
+        files.sort();
     }
 
     Ok(files)
