@@ -1,5 +1,7 @@
 # copycat
 
+![ci](https://github.com/rhajizada/copycat/actions/workflows/ci.yml/badge.svg)
+
 **copycat** is a CLI tool written in **Rust** that reads the contents of a
 repository directory (or a single file), formats them into **Markdown**, and
 copies the result to your system clipboard.
