@@ -173,7 +173,10 @@
       ".md",
       ".markdown"
     ],
-    "filenames": []
+    "filenames": [
+      "README",
+      "readme"
+    ]
   },
   "mermaid": {
     "extensions": [

@@ -52,3 +52,49 @@ pub fn detect_language(path: &Path) -> &str {
         _ => "text",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::Path;
+
+    #[test]
+    fn test_detect_rust_extension() {
+        let path = Path::new("main.rs");
+        assert_eq!(
+            detect_language(path),
+            "rust",
+            "`.rs` files should return `rust`"
+        );
+    }
+
+    #[test]
+    fn test_detect_python_extension() {
+        let path = Path::new("script.py");
+        assert_eq!(
+            detect_language(path),
+            "python",
+            "`.py` files should return `python`"
+        );
+    }
+
+    #[test]
+    fn test_detect_markdown() {
+        let path = Path::new("README");
+        assert_eq!(
+            detect_language(path),
+            "markdown",
+            "Files named `README.md` should return `markdown`"
+        );
+    }
+
+    #[test]
+    fn test_detect_unknown() {
+        let path = Path::new("some.unknownext");
+        assert_eq!(
+            detect_language(path),
+            "text",
+            "Unknown extension should fall back to `text`"
+        );
+    }
+}
