@@ -3,7 +3,8 @@ name = "copycat"
 version = "0.1.0"
 edition = "2021"
 authors = ["Rufat Hajizada hajizada.rufat@gmail.com"]
-description = "CLI tool to copy the contents of a repository directory to the system clipboard."
+description = "CLI tool that renders files from a directory as Markdown and copies the result to the clipboard."
+
 
 [dependencies]
 anyhow = "1.0.97"
