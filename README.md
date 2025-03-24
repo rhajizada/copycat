@@ -1,7 +1,13 @@
 # copycat
 
-**copycat** is a CLI tool written in **Rust** that copies the contents of a
-repository directory (or single file) to the system clipboard. This is useful for quickly providing code context to LLMs or sharing snippets.
+**copycat** is a CLI tool written in **Rust** that reads the contents of a
+repository directory (or a single file), formats them into **Markdown**, and
+copies the result to your system clipboard.
+
+Each file is embedded in Markdown as a code block, with language-specific syntax
+highlighting based on file extension or name. Markdown files themselves are
+included as-is. This makes **copycat** especially useful for sharing structured code
+snippets with LLMs, documentation tools, or other developers.
 
 ## Features
 
