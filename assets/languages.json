@@ -1,0 +1,299 @@
+{
+  "aspnet": {
+    "extensions": [
+      ".asp",
+      ".aspx"
+    ],
+    "filenames": []
+  },
+  "c": {
+    "extensions": [
+      ".c"
+    ],
+    "filenames": []
+  },
+  "cpp": {
+    "extensions": [
+      ".cpp",
+      ".cc",
+      ".cxx",
+      ".hpp",
+      ".hxx"
+    ],
+    "filenames": []
+  },
+  "csharp": {
+    "extensions": [
+      ".cs"
+    ],
+    "filenames": []
+  },
+  "clojure": {
+    "extensions": [
+      ".clj",
+      ".cljc",
+      ".cljx"
+    ],
+    "filenames": []
+  },
+  "css": {
+    "extensions": [
+      ".css",
+      ".scss",
+      ".sass",
+      ".less"
+    ],
+    "filenames": []
+  },
+  "d": {
+    "extensions": [
+      ".d"
+    ],
+    "filenames": []
+  },
+  "dart": {
+    "extensions": [
+      ".dart"
+    ],
+    "filenames": []
+  },
+  "diff": {
+    "extensions": [
+      ".diff"
+    ],
+    "filenames": []
+  },
+  "dockerfile": {
+    "extensions": [],
+    "filenames": [
+      "Dockerfile"
+    ]
+  },
+  "erlang": {
+    "extensions": [
+      ".erl"
+    ],
+    "filenames": []
+  },
+  "go": {
+    "extensions": [
+      ".go"
+    ],
+    "filenames": [
+      "go.mod"
+    ]
+  },
+  "graphql": {
+    "extensions": [
+      ".gql",
+      ".graphql"
+    ],
+    "filenames": []
+  },
+  "groovy": {
+    "extensions": [
+      ".groovy",
+      ".gradle"
+    ],
+    "filenames": []
+  },
+  "handlebars": {
+    "extensions": [
+      ".handlebars",
+      ".hbs"
+    ],
+    "filenames": []
+  },
+  "html": {
+    "extensions": [
+      ".html",
+      ".htm",
+      ".xhtml"
+    ],
+    "filenames": []
+  },
+  "java": {
+    "extensions": [
+      ".java"
+    ],
+    "filenames": []
+  },
+  "javascript": {
+    "extensions": [
+      ".js"
+    ],
+    "filenames": []
+  },
+  "jsx": {
+    "extensions": [
+      ".jsx"
+    ],
+    "filenames": []
+  },
+  "json": {
+    "extensions": [
+      ".json"
+    ],
+    "filenames": []
+  },
+  "julia": {
+    "extensions": [
+      ".jl"
+    ],
+    "filenames": []
+  },
+  "kotlin": {
+    "extensions": [
+      ".kt",
+      ".kts"
+    ],
+    "filenames": []
+  },
+  "liquid": {
+    "extensions": [
+      ".liquid"
+    ],
+    "filenames": []
+  },
+  "lua": {
+    "extensions": [
+      ".lua"
+    ],
+    "filenames": []
+  },
+  "makefile": {
+    "extensions": [],
+    "filenames": [
+      "Makefile",
+      "makefile"
+    ]
+  },
+  "markdown": {
+    "extensions": [
+      ".md",
+      ".markdown"
+    ],
+    "filenames": []
+  },
+  "mermaid": {
+    "extensions": [
+      ".mmd"
+    ],
+    "filenames": []
+  },
+  "objc": {
+    "extensions": [
+      ".m"
+    ],
+    "filenames": []
+  },
+  "objc++": {
+    "extensions": [
+      ".mm"
+    ],
+    "filenames": []
+  },
+  "ocaml": {
+    "extensions": [
+      ".ml",
+      ".mli"
+    ],
+    "filenames": []
+  },
+  "perl": {
+    "extensions": [
+      ".pl",
+      ".pm"
+    ],
+    "filenames": []
+  },
+  "php": {
+    "extensions": [
+      ".php"
+    ],
+    "filenames": []
+  },
+  "powershell": {
+    "extensions": [
+      ".ps1"
+    ],
+    "filenames": []
+  },
+  "python": {
+    "extensions": [
+      ".py",
+      ".pyw"
+    ],
+    "filenames": []
+  },
+  "r": {
+    "extensions": [
+      ".r",
+      ".R"
+    ],
+    "filenames": []
+  },
+  "ruby": {
+    "extensions": [
+      ".rb"
+    ],
+    "filenames": []
+  },
+  "rust": {
+    "extensions": [
+      ".rs"
+    ],
+    "filenames": []
+  },
+  "scala": {
+    "extensions": [
+      ".scala"
+    ],
+    "filenames": []
+  },
+  "shell": {
+    "extensions": [
+      ".sh",
+      ".bash",
+      ".zsh"
+    ],
+    "filenames": []
+  },
+  "solidity": {
+    "extensions": [
+      ".sol"
+    ],
+    "filenames": []
+  },
+  "sql": {
+    "extensions": [
+      ".sql"
+    ],
+    "filenames": []
+  },
+  "swift": {
+    "extensions": [
+      ".swift"
+    ],
+    "filenames": []
+  },
+  "typescript": {
+    "extensions": [
+      ".ts"
+    ],
+    "filenames": []
+  },
+  "yaml": {
+    "extensions": [
+      ".yml",
+      ".yaml"
+    ],
+    "filenames": []
+  },
+  "xml": {
+    "extensions": [
+      ".xml"
+    ],
+    "filenames": []
+  }
+}
