@@ -24,7 +24,7 @@ struct Args {
     excludes: Vec<String>,
 
     /// Sort files alphabetically.
-    #[arg(long = "sort", action = ArgAction::SetTrue)]
+    #[arg(long = "sort", short = 's', action = ArgAction::SetTrue)]
     sort: bool,
 }
 
