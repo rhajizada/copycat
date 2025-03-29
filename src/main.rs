@@ -2,6 +2,7 @@ mod files;
 mod formatter;
 mod language;
 
+use anyhow::Result;
 use clap::{ArgAction, Parser};
 use copypasta::{ClipboardContext, ClipboardProvider};
 use std::path::PathBuf;
@@ -28,25 +29,34 @@ struct Args {
     sort: bool,
 }
 
-fn main() {
-    let args = Args::parse();
-
+fn run(args: Args) -> Result<()> {
     if !args.path.exists() {
-        panic!("provided path {} does not exist", args.path.display());
+        anyhow::bail!("provided path {} does not exist", args.path.display());
     }
 
     let files = files::collect_files(args.path.clone(), &args.excludes, args.sort)
-        .expect("failed to collect files");
+        .map_err(|e| anyhow::anyhow!("failed to collect files: {}", e))?;
 
     if files.is_empty() {
-        eprintln!("no matching files found, nothing to copy");
-        std::process::exit(1);
+        anyhow::bail!("no matching files found, nothing to copy");
     }
 
     let markdown = formatter::generate_markdown(&args.path, &files)
-        .expect("failed to format files as Markdown");
+        .map_err(|e| anyhow::anyhow!("failed to read files: {}", e))?;
 
-    let mut ctx = ClipboardContext::new().expect("failed to create clipboard context");
+    let mut ctx = ClipboardContext::new()
+        .map_err(|e| anyhow::anyhow!("failed to create clipboard context: {}", e))?;
+
     ctx.set_contents(markdown)
-        .expect("failed to set clipboard contents");
+        .map_err(|e| anyhow::anyhow!("failed to set clipboard contents: {}", e))?;
+
+    Ok(())
+}
+
+fn main() {
+    let args = Args::parse();
+    if let Err(err) = run(args) {
+        eprintln!("{}", err);
+        std::process::exit(1);
+    }
 }
