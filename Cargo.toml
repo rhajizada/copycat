@@ -1,9 +1,9 @@
 [package]
 name = "copycat"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Rufat Hajizada hajizada.rufat@gmail.com"]
-description = "CLI tool that renders files from a directory as Markdown and copies the result to the clipboard."
+description = "CLI to convert directory contents into Markdown or ASCII tree (respects .gitignore), copy to clipboard or print."
 
 
 [dependencies]
