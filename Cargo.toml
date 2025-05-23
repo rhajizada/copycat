@@ -1,9 +1,10 @@
 [package]
 name = "copycat"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+license = "MIT"
 authors = ["Rufat Hajizada hajizada.rufat@gmail.com"]
-description = "CLI tool that renders files from a directory as Markdown and copies the result to the clipboard."
+description = "CLI tool to copy your project source code as Markdown to clipboard for context-aware responses from LLMs. "
 
 
 [dependencies]

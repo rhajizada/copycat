@@ -1,22 +1,21 @@
 # copycat
 
 ![ci](https://github.com/rhajizada/copycat/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-**copycat** is a CLI tool written in **Rust** that reads the contents of a
-repository directory (or a single file), formats them into **Markdown**, and
-copies the result to your system clipboard.
-
-Each file is embedded in Markdown as a code block, with language-specific syntax
-highlighting based on file extension or name. Markdown files themselves are
-included as-is. This makes **copycat** especially useful for sharing structured code
-snippets with LLMs, documentation tools, or other developers.
+CLI tool to copy your project source code as Markdown to clipboard for
+context-aware responses from LLMs.
 
 ## Features
 
-- Recursively collects files from a specified directory.
-- Respects `.gitignore` rules.
-- Allows additional exclude patterns via `--exclude`.
-- Can optionally sort files alphabetically before generating Markdown.
+- Recursive file collection from a specified directory or single file
+- Respects .gitignore
+- Custom exclude patterns via --exclude <pattern>
+- Optional sorting (--sort)
+- Output modes:
+  - Markdown: embeds each file as a fenced code block with syntax highlighting
+  - Tree: renders an ASCII-style directory tree (--tree)
+- Choose between copying to clipboard (default) or printing to stdout (--print)
 
 ## Installation
 
