@@ -6,7 +6,7 @@ mod tree;
 use anyhow::Result;
 use clap::{ArgAction, Parser};
 use copypasta::{ClipboardContext, ClipboardProvider};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// Command-line arguments for the `copycat` application.
 #[derive(Parser, Debug)]
@@ -38,22 +38,22 @@ struct Args {
 }
 
 /// Gather full Markdown of all collected files.
-fn get_contents(path: &PathBuf, excludes: &[String], sort: bool) -> Result<String> {
-    let files = files::collect_files(path.clone(), excludes, sort)
+fn get_contents(path: &Path, excludes: &[String], sort: bool) -> Result<String> {
+    let files = files::collect_files(path.to_path_buf(), excludes, sort)
         .map_err(|e| anyhow::anyhow!("failed to collect files: {}", e))?;
 
     if files.is_empty() {
         anyhow::bail!("no matching files found, nothing to copy");
     }
 
-    let markdown = formatter::generate_markdown(path.as_path(), &files)
+    let markdown = formatter::generate_markdown(path, &files)
         .map_err(|e| anyhow::anyhow!("failed to read files: {}", e))?;
     Ok(markdown)
 }
 
 /// Build an ASCII tree of all collected files & directories.
-fn get_tree(path: &PathBuf, excludes: &[String], sort: bool) -> Result<String> {
-    let tree = tree::collect_tree(path.clone(), excludes, sort)
+fn get_tree(path: &Path, excludes: &[String], sort: bool) -> Result<String> {
+    let tree = tree::collect_tree(path.to_path_buf(), excludes, sort)
         .map_err(|e| anyhow::anyhow!("failed to build tree: {}", e))?;
     Ok(tree)
 }
