@@ -2,8 +2,9 @@
 name = "copycat"
 version = "0.2.0"
 edition = "2021"
+license = "MIT"
 authors = ["Rufat Hajizada hajizada.rufat@gmail.com"]
-description = "CLI to convert directory contents into Markdown or ASCII tree (respects .gitignore), copy to clipboard or print."
+description = "CLI tool to copy your project source code as Markdown to clipboard for context-aware responses from LLMs. "
 
 
 [dependencies]
