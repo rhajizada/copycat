@@ -1,0 +1,50 @@
+name: Release
+run-name: Build and release ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    needs: env
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      version: ${{ needs.env.outputs.version }}
+
+  release:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        id: download
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ github.workspace }}/artifacts
+
+      - name: Prepare release assets
+        run: |
+          mkdir dist
+          find "${{ github.workspace }}/artifacts" -type f -name "copycat" | while read -r file; do
+            parent_dir=$(basename "$(dirname "$file")")
+            temp_dir=$(mktemp -d)
+            cp "$file" "$temp_dir/copycat"
+            chmod +x "$temp_dir/copycat"
+            tar -czf "dist/${parent_dir}.tar.gz" -C "$temp_dir" copycat
+            rm -rf "$temp_dir"
+          done
+        shell: bash
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
