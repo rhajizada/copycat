@@ -8,24 +8,4 @@ on:
 
 jobs:
   ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Rust toolchain
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          components: clippy, rustfmt
-          rustflags: "-D warnings"
-
-      - name: Check formatting
-        uses: actions-rust-lang/rustfmt@v1
-
-      - name: Lint
-        run: cargo clippy --all-targets --all-features
-
-      - name: Run tests
-        run: cargo test --all-features
-
-      - name: Build
-        run: cargo build --release
+    uses: ./.github/workflows/reusable-ci.yml
