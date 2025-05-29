@@ -20,10 +20,11 @@ pub fn collect_files(path: PathBuf, excludes: &[String], sort: bool) -> Result<V
 
     let walker = WalkBuilder::new(&path)
         .standard_filters(true)
-        .follow_links(false)
+        .hidden(false)
+        .follow_links(true)
         .ignore(true)
         .git_ignore(true)
-        .git_exclude(true)
+        .git_exclude(false)
         .git_global(true)
         .overrides(overrides)
         .build();
@@ -46,6 +47,7 @@ pub fn collect_files(path: PathBuf, excludes: &[String], sort: bool) -> Result<V
 /// By prefixing each pattern with `!`, we tell the override to exclude it.
 fn build_override(excludes: &[String], root: &Path) -> Result<Override> {
     let mut builder = OverrideBuilder::new(root);
+    builder.add("!.git")?;
     for pattern in excludes {
         builder.add(&format!("!{}", pattern))?;
     }
@@ -55,7 +57,7 @@ fn build_override(excludes: &[String], root: &Path) -> Result<Override> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs::File;
+    use std::fs::{self, File};
     use std::io::Write;
     use tempfile::tempdir;
 
@@ -103,7 +105,7 @@ mod tests {
     fn respects_gitignore() {
         let dir = tempdir().unwrap();
 
-        std::fs::create_dir(dir.path().join(".git")).unwrap();
+        fs::create_dir(dir.path().join(".git")).unwrap();
 
         let gitignore_path = dir.path().join(".gitignore");
         let mut gitignore = File::create(&gitignore_path).unwrap();
@@ -114,16 +116,20 @@ mod tests {
         File::create(&ignored_file).unwrap();
         File::create(&kept_file).unwrap();
 
-        let files = collect_files(dir.path().to_path_buf(), &[], false).unwrap();
-
-        assert_eq!(files, vec![kept_file]);
+        let mut files = collect_files(dir.path().to_path_buf(), &[], false).unwrap();
+        files.sort();
+        assert_eq!(files, vec![gitignore_path.clone(), kept_file]);
     }
 
     #[test]
     fn respects_combined_gitignore_and_excludes() {
         let dir = tempdir().unwrap();
 
-        std::fs::create_dir(dir.path().join(".git")).unwrap();
+        fs::create_dir(dir.path().join(".git")).unwrap();
+
+        let gitignore_path = dir.path().join(".gitignore");
+        let mut gitignore = File::create(&gitignore_path).unwrap();
+        writeln!(gitignore, "ignored_by_gitignore.rs").unwrap();
 
         let file_ignored_by_gitignore = dir.path().join("ignored_by_gitignore.rs");
         let file_ignored_by_exclude = dir.path().join("excluded_by_flag.txt");
@@ -133,13 +139,11 @@ mod tests {
         File::create(&file_ignored_by_exclude).unwrap();
         File::create(&file_kept).unwrap();
 
-        let mut gitignore = File::create(dir.path().join(".gitignore")).unwrap();
-        writeln!(gitignore, "ignored_by_gitignore.rs").unwrap();
-
         let excludes = vec!["excluded_by_flag.txt".to_string()];
-        let files = collect_files(dir.path().to_path_buf(), &excludes, false).unwrap();
+        let mut files = collect_files(dir.path().to_path_buf(), &excludes, false).unwrap();
+        files.sort();
 
-        assert_eq!(files, vec![file_kept]);
+        assert_eq!(files, vec![gitignore_path.clone(), file_kept]);
     }
 
     #[test]
@@ -147,7 +151,7 @@ mod tests {
         let dir = tempdir().unwrap();
 
         let logs_dir = dir.path().join("logs");
-        std::fs::create_dir_all(&logs_dir).unwrap();
+        fs::create_dir_all(&logs_dir).unwrap();
 
         let top_log = dir.path().join("top_level.log");
         let nested_log = logs_dir.join("error.log");
@@ -174,5 +178,35 @@ mod tests {
         let files = collect_files(dir.path().to_path_buf(), &[], true).unwrap();
 
         assert_eq!(files, vec![file_b, file_a]);
+    }
+
+    #[test]
+    fn collects_hidden_files_and_dirs() {
+        let dir = tempdir().unwrap();
+        let hidden_file = dir.path().join(".secret");
+        let hidden_dir = dir.path().join(".hidden");
+        let hidden_dir_file = hidden_dir.join("inside.txt");
+        fs::create_dir(&hidden_dir).unwrap();
+        File::create(&hidden_file).unwrap();
+        File::create(&hidden_dir_file).unwrap();
+
+        let mut files = collect_files(dir.path().to_path_buf(), &[], true).unwrap();
+        files.sort();
+        let expected = vec![hidden_dir_file.clone(), hidden_file.clone()];
+        assert_eq!(files, expected);
+    }
+
+    #[test]
+    fn skips_git_directory_contents() {
+        let dir = tempdir().unwrap();
+        let git_dir = dir.path().join(".git");
+        let git_file = git_dir.join("config");
+        fs::create_dir_all(&git_dir).unwrap();
+        File::create(&git_file).unwrap();
+        let file = dir.path().join("main.rs");
+        File::create(&file).unwrap();
+
+        let files = collect_files(dir.path().to_path_buf(), &[], true).unwrap();
+        assert_eq!(files, vec![file]);
     }
 }
