@@ -21,7 +21,18 @@ pub fn generate_markdown(root: &Path, files: &[PathBuf]) -> Result<String> {
 
     for file in files {
         let rel_path = file.strip_prefix(root).unwrap_or(file.as_path());
-        let contents = fs::read_to_string(file)?;
+        let contents = match fs::read_to_string(file) {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!(
+                    "warning: could not read file '{}': {}",
+                    rel_path.display(),
+                    e
+                );
+                continue;
+            }
+        };
+
         let language = detect_language(file);
 
         // Add a section heading with the relative path
@@ -94,5 +105,23 @@ mod tests {
 
         // Should be empty, no headings
         assert!(md_output.is_empty());
+    }
+
+    #[test]
+    fn test_generate_markdown_skips_unreadable_file() {
+        let dir = tempdir().unwrap();
+        let root = dir.path();
+
+        let ok_path = root.join("ok.rs");
+        let mut ok_file = File::create(&ok_path).unwrap();
+        writeln!(ok_file, "fn main() {{ println!(\"ok\"); }}").unwrap();
+
+        let missing_path = root.join("missing.rs");
+
+        let files = vec![ok_path.clone(), missing_path.clone()];
+        let md_output = generate_markdown(root, &files).unwrap();
+
+        assert!(md_output.contains("### `ok.rs`"));
+        assert!(!md_output.contains("### `missing.rs`"));
     }
 }
