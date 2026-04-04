@@ -63,7 +63,59 @@ jobs:
 
       - name: Run coverage
         if: github.ref == 'refs/heads/main'
-        run: cargo llvm-cov --workspace --all-features
+        run: cargo llvm-cov --workspace --all-features --json --summary-only > coverage.json
+
+      - name: Parse coverage
+        id: coverage
+        if: github.ref == 'refs/heads/main'
+        run: |
+          coverage_raw="$(jq -r '.data[0].totals.lines.percent' coverage.json)"
+          coverage="$(printf '%.1f' "$coverage_raw")"
+          coverage_int="${coverage%.*}"
+
+          if [ -z "$coverage_int" ]; then
+            echo "Failed to parse line coverage percentage." >&2
+            exit 1
+          fi
+
+          case "$coverage_int" in
+            100|9[5-9]) color="brightgreen" ;;
+            8[0-9]|9[0-4]) color="green" ;;
+            7[0-9]) color="yellowgreen" ;;
+            5[0-9]|6[0-9]) color="yellow" ;;
+            3[0-9]|4[0-9]) color="orange" ;;
+            [0-9]|1[0-9]|2[0-9]) color="red" ;;
+            *) color="red" ;;
+          esac
+
+          echo "coverage=${coverage}%" >> "$GITHUB_OUTPUT"
+          echo "color=$color" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Update badge
+        if: github.ref == 'refs/heads/main'
+        env:
+          SIGNUM_BADGE_ID: ${{ vars.SIGNUM_BADGE_ID }}
+          SIGNUM_BADGE_TOKEN: ${{ secrets.SIGNUM_BADGE_TOKEN }}
+          COVERAGE: ${{ steps.coverage.outputs.coverage }}
+          COLOR: ${{ steps.coverage.outputs.color }}
+        run: |
+          response="$(
+            curl -sS -X PATCH \
+              "https://signum.rhajizada.dev/api/badges/${SIGNUM_BADGE_ID}" \
+              -H 'accept: application/json' \
+              -H "Authorization: Bearer ${SIGNUM_BADGE_TOKEN}" \
+              -H 'Content-Type: application/json' \
+              -d "{\"color\":\"${COLOR}\",\"status\":\"${COVERAGE}\"}" \
+              -w "\n%{http_code}"
+          )"
+          http_body="$(printf '%s\n' "$response" | sed '$d')"
+          http_code="$(printf '%s\n' "$response" | tail -n 1)"
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Badge update failed (${http_code}): ${http_body}" >&2
+            exit 1
+          fi
+        shell: bash
 
   build:
     name: Build

@@ -1,7 +1,9 @@
 # copycat
 
+![Rust](https://shields.io/badge/-Rust-3776AB?logo=rust)
 ![ci](https://github.com/rhajizada/copycat/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![coverage](https://signum.rhajizada.dev/api/badges/4795191d-859e-4a7a-937f-650806d6a400)
 
 CLI tool to copy your project source code as Markdown to clipboard for
 context-aware responses from LLMs.
