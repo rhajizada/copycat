@@ -33,7 +33,23 @@ jobs:
         run: cargo clippy --all-targets --all-features
 
       - name: Run tests
+        if: ${{ !(github.ref == 'refs/heads/main' && github.event_name == 'push') }}
         run: cargo test --all-features
+
+      - name: Install coverage tooling
+        if: github.ref == 'refs/heads/main'
+        run: |
+          rustup component add llvm-tools-preview
+          cargo install cargo-llvm-cov --locked
+        shell: bash
+
+      - name: Run coverage
+        if: github.ref == 'refs/heads/main'
+        run: cargo llvm-cov --workspace --all-features --lcov --output-path coverage.lcov
+
+      - name: Show coverage summary
+        if: github.ref == 'refs/heads/main'
+        run: cargo llvm-cov report --summary-only
 
       - name: Add target
         run: rustup target add ${{ matrix.target }}
