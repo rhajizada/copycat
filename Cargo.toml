@@ -9,7 +9,7 @@ description = "CLI tool to copy your project source code as Markdown to clipboar
 
 [dependencies]
 anyhow = "1.0.97"
-clap = { version = "4.5.32", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"] }
 copypasta = "0.10.1"
 ignore = "0.4.23"
 once_cell = "1.21.1"
