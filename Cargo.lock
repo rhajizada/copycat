@@ -143,9 +143,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-llvm-cov"
-version = "0.8.6"
+version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "233ec0c436242e6bfa086082667706e66a0349609d8cb97245eabca987856a43"
+checksum = "dbb60793c145d8ef09b5cfa49c2f2890b93bde5a13885a9369654ca87dddfe7f"
 dependencies = [
  "anyhow",
  "camino",
@@ -472,9 +472,9 @@ checksum = "3d3067d79b975e8844ca9eb072e16b31c3c1c36928edf9c6789548c524d0d954"
 
 [[package]]
 name = "ignore"
-version = "0.4.25"
+version = "0.4.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3d782a365a015e0f5c04902246139249abf769125006fbe7649e2ee88169b4a"
+checksum = "b915661dd01db3f05050265b2477bcc6527b3792388e2749b41623cc592be67d"
 dependencies = [
  "crossbeam-deque",
  "globset",
